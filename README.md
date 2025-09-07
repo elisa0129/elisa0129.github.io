@@ -1,7 +1,4 @@
 # elisa0129.github.io
-p {
-  color: red;
-}
 
 <html>
   <body>
