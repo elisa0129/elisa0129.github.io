@@ -1,0 +1,58 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#wrapper {
+    width: 800px;
+    margin: 0 auto;
+}
+
+#banner {
+    width: 800px;
+    height: 150px;
+    background-color: rgba(255, 0, 0, 0.5);
+    clear: both;
+    position: fixed;
+}
+
+#banner-placeholder {
+    height: 300px;
+    clear: both;
+}
+
+.container {
+    overflow: hidden;
+}
+
+#nav {
+    width: 100px;
+    background-color: bisque;
+    position: fixed;
+    /* float:left; */
+}
+
+#nav-placeholder {
+    width: 100px;
+    height: 100%;
+    float: left;
+}
+
+#content {
+    width: 600px;
+    background-color: aliceblue;
+    float: left;
+}
+
+#supporting {
+    width: 100px;
+    background-color: lightgray;
+    float: left;
+}
+
+#footer {
+    width: 800px;
+    height: 100px;
+    background-color: darkgray;
+    clear: both;
+}
