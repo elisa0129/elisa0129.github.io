@@ -1,0 +1,204 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f5f7;
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background: #232946;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(35,41,70,0.08);
+}
+.navbar .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+.navbar ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+.navbar li {
+    margin-right: 32px;
+}
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 18px 0;
+    display: block;
+    transition: color 0.2s, background 0.2s;
+}
+.navbar a:hover {
+    color: #eebd89;
+    background: #2d3250;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    box-sizing: border-box;
+}
+.banner {
+    background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+    color: #fff;
+    border-radius: 12px;
+    margin-top: 32px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(33,147,176,0.08);
+}
+.banner-full {
+    width: 100%;
+    background: linear-gradient(90deg, #232946 0%, #5b8fb9 100%);
+    color: #fff;
+    margin: 0;
+    padding: 48px 0 40px 0;
+    box-shadow: 0 4px 24px rgba(35,41,70,0.08);
+}
+.banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 24px;
+}
+.banner-content h1 {
+    margin: 0 0 12px 0;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #eebd89;
+}
+.banner-content p {
+    font-size: 1.2rem;
+    margin-bottom: 0;
+}
+.section {
+    background: #fff;
+    border-radius: 12px;
+    margin-top: 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.section-full {
+    width: 100%;
+    background: #fff;
+    margin-top: 32px;
+    box-shadow: 0 2px 12px rgba(35,41,70,0.08);
+    border-radius: 0;
+    padding: 0 0 320px 0; /* 原本64px，放大5倍 */
+}
+.section-full.last-section {
+    padding-bottom: 320px; /* 與 section-full 留白一致，五倍長 */
+}
+.section-banner {
+    width: 100%;
+    background: linear-gradient(90deg, #eebd89 0%, #f4d160 100%);
+    color: #232946;
+    padding: 320px 0 240px 0; /* 原本160px/120px，放大2倍 */
+    text-align: center;
+    border-radius: 0;
+    box-shadow: 0 2px 8px rgba(238,189,137,0.08);
+}
+.section-banner h2 {
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #232946;
+}
+.section-content {
+    max-width: 700px;
+    margin: 48px auto 0 auto;
+    padding: 80px 32px;
+    box-sizing: border-box;
+    background: #fffbe6;
+    border-radius: 24px;
+    box-shadow: 0 2px 12px rgba(35,41,70,0.08);
+    text-align: center;
+    margin-bottom: 320px; /* 原本64px，放大5倍 */
+}
+.section-content p {
+    font-size: 1.1rem;
+    color: #333;
+}
+.section h2 {
+    margin-top: 0;
+    font-size: 2rem;
+    color: #2193b0;
+}
+.section p {
+    font-size: 1.1rem;
+    color: #333;
+}
+.section-divider {
+    width: 60%;
+    height: 4px;
+    background: linear-gradient(90deg, #f7971e 0%, #ffd200 100%);
+    margin: 48px auto 0 auto;
+    border-radius: 2px;
+}
+.section-gap-divider {
+    width: 100vw;
+    height: 48px; /* 原本16px，放大3倍 */
+    background: #eaeaea;
+    margin: 0;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    border: none;
+}
+.section-full-divider {
+    width: 100vw;
+    height: 64px; /* 回復原本的高度 */
+    background: #e0e4ea;
+    margin: 0;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    border: none;
+}
+
+/* section 上色質感 */
+.section-full:nth-child(2) .section-banner {
+    background: linear-gradient(90deg, #eebd89 0%, #f4d160 100%);
+    color: #232946;
+}
+.section-full:nth-child(2) .section-banner h2 {
+    color: #232946;
+    text-shadow: none;
+}
+.section-full:nth-child(4) .section-banner {
+    background: linear-gradient(90deg, #5b8fb9 0%, #232946 100%);
+    color: #fff;
+}
+.section-full:nth-child(4) .section-banner h2 {
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(35,41,70,0.2);
+}
+
+@media (max-width: 700px) {
+    .container {
+        padding: 16px 8px;
+    }
+    .navbar li {
+        margin-right: 16px;
+    }
+    .banner h1 {
+        font-size: 2rem;
+    }
+    .section h2 {
+        font-size: 1.3rem;
+    }
+    .section-banner {
+        padding: 160px 0 120px 0; /* 原本80px/60px，放大2倍 */
+    }
+    .section-banner h2 {
+        font-size: 1.3rem;
+    }
+    .section-content {
+        padding: 16px 8px;
+    }
+}
