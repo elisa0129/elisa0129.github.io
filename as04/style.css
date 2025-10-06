@@ -1,0 +1,65 @@
+ /* ======================================
+ style.css （請存成 assignment/assignment4/style.css）
+  純 CSS：Scroll-Driven Animations（view-timeline）
+  效果接近 jungjunghsu/caglahsu 範例：
+  1) 每張圖 sticky 停留；2) 文字自下往上移動；3) 達上緣後淡出；4) 下一張圖推上。
+====================================== */
+:root{ --ink:#111827; --paper:#F8FAFC; --accent:#F59E0B; --muted:#6B7280 }
+html{scroll-behavior:smooth}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans TC",Arial;line-height:1.65;color:var(--ink);background:var(--paper)}
+
+/* 讓每張圖「停留」：外層高 300vh，內層 sticky 100vh */
+.scrolly{height:300vh;position:relative;
+  /* 為本段建立 view timeline，供內文字動畫驅動 */
+  view-timeline-name: --s; 
+  view-timeline-axis: block; /* 以縱向滾動為軸 */
+}
+.frame{position:sticky;top:0;height:100vh;display:grid;place-items:center;overflow:hidden}
+.frame{background-image:var(--bg);background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed}
+/* iOS/Safari fallback：若 fixed 支援不佳，退為 scroll */
+@supports (-webkit-overflow-scrolling: touch){ .frame{background-attachment:scroll} }
+/* 提升讀性：加淡淡遮罩 */
+.frame::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.32))}
+
+/* 文字卡靠底，留出上移空間 */
+ .card{position:relative;z-index:2;max-width:400px;width:auto;min-width:220px;display:flex;align-items:flex-end;justify-content:flex-end;margin-left:auto;
+  background:rgba(255,255,255,.9);border:1px solid rgba(17,24,39,.08);border-radius:18px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.08);
+  animation-name: card-rise, card-fadeout;
+  animation-timeline: --s, --s;
+  animation-range: entry 0% cover 100%, cover 80% exit 100%;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+  will-change: transform, opacity;
+}
+
+@keyframes card-rise{
+  from{ transform: translateY(40%); }
+  to  { transform: translateY(-40%); }
+}
+@keyframes card-fadeout{
+  from{ opacity: 1; }
+  to  { opacity: 0; }
+}
+.kicker{display:inline-block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+
+h1,h2{margin:0 0 6px}
+h1{font-size:42px;line-height:1.15}
+h2{font-size:30px;line-height:1.2}
+
+/* ===== 文字跟著滾動移動與淡出（純 CSS） ===== */
+/* 讓 .move 內文字在 --s 這條 timeline 上做兩段動畫：rise 與 fadeout */
+.move{
+  /* 文字固定在框内，不做动画 */
+}
+
+/* 結尾滿版頁 */
+.credits{height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#111827,#334155);color:#fff}
+.credits .inside{max-width:1000px;padding:24px}
+.credits h2{color:#FDE68A;margin:0 0 8px}
+
+footer{padding:16px;text-align:center;color:#6B7280;font-size:13px}
+
+/* 動畫無障礙 */
+@media (prefers-reduced-motion: reduce){
+  .move{ animation: none; }
+}

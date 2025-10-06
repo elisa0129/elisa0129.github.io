@@ -1,0 +1,106 @@
+<!-- =========================
+ index.html （請存成 assignment/assignment4/index.html）
+ 需同層放置 style.css 與 assets/ 目錄
+========================== -->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 生成故事圖像展示｜流浪女孩</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <main>
+        <!-- CH1 啟程 -->
+        <section id="s1" class="scrolly" aria-label="第一章：啟程">
+            <div class="frame" style="--bg:url('assets/generated01.png')">
+                <article class="card">
+                    <div class="text move">
+                        <span class="kicker">封面 / 序章</span>
+                        <h2>回望：起點之前</h2>
+                        <p>她沒有告別，也不是不捨，只是回頭確認——自己準備好了。從這一眼開始，旅程被命名。向下滑動，讓圖片停留、讓文字上行。</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- CH2 相遇 -->
+        <section id="s2" class="scrolly" aria-label="第二章：相遇">
+            <div class="frame" style="--bg:url('assets/generated02.png')">
+                <article class="card">
+                    <div class="text move">
+                        <span class="kicker">第一章</span>
+                        <h2>啟程：車窗外的世界開始向後退</h2>
+                        <p>清晨的站台，短髮女孩背起小背包。她把不確定裝進口袋，只帶走地圖與一張車票。列車啟動時，倒影裡的她也向前。</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- CH3 風暴 -->
+        <section id="s3" class="scrolly" aria-label="第三章：風暴">
+            <div class="frame" style="--bg:url('assets/generated03.png')">
+                <article class="card">
+                    <div class="text move">
+                        <span class="kicker">第二章</span>
+                        <h2>相遇：黃昏市集的語言</h2>
+                        <p>第一句問候、生疏的發音、別人的路與故事——陌生感被燈串與笑臉稀釋。她學會用好奇去翻譯世界。</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- CH4 抉擇 -->
+        <section id="s4" class="scrolly" aria-label="第四章：抉擇">
+            <div class="frame" style="--bg:url('assets/generated04.png')">
+                <article class="card">
+                    <div class="text move">
+                        <span class="kicker">第三章</span>
+                        <h2>風暴：雨勢把山徑抖成鉛筆線</h2>
+                        <p>工寮屋簷下，她把行程攤開又闔上。迷路不是失敗，只是還沒被畫在地圖上的那一段。雨停，雲被撫平。</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- CH5 尾聲（可選） -->
+        <section id="s5" class="scrolly" aria-label="第五章：尾聲">
+            <div class="frame" style="--bg:url('assets/generated05.png')">
+                <article class="card">
+                    <div class="text move">
+                        <span class="kicker">第四章</span>
+                        <h2>抉擇：回去，或更遠？</h2>
+                        <p>天光把海面切成兩半：歸途與遠行。答案不在地名，而在腳掌落下的方向。她笑了，因為兩邊其實都通往自己。</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 100vh 結尾頁：工具與過程說明 -->
+        <section id="credits" class="credits" aria-label="工具與過程">
+            <div class="inside">
+                <h2>圖片生產工具與過程</h2>
+                                <p><strong>圖像生成工具：</strong> Nano Banana（Google AI Studio）。</p>
+                                <div style="margin:18px 0 0 0;">
+                                    <strong>故事運用ChatGPT協助構思，並生成圖像提示詞如下：</strong><br>
+                                    寫實插畫／電影調色、細膩光影、16:10 橫式，角色「同一名短髮亞洲女孩、灰綠外套、小黑背包」。<br>
+                                    <br>
+                                    <u>範例：啟程（清晨出發）</u><br>
+                                    「清晨城市邊界的車站月台，短髮亞洲女孩背著小黑背包，手持紙本車票，列車窗上映出她的倒影與淡金色天光，空氣冷、色溫偏藍紫，寫實插畫、柔和電影光影、16:10 橫式、乾淨構圖」
+                                </div>
+                <p><strong>版型說明：</strong> 外層 <code>.scrolly</code> 設 <code>height:300vh</code>；內層 <code>.frame</code> 採
+                    <code>position:sticky; top:0; height:100vh</code> 並以 <code>background-attachment:fixed</code>
+                    呈現視差。捲動時僅文字自下而上移動，尾段淡出；下一張圖片推上。</p>
+                <p style="font-size:0.95em;color:#eee;text-align:right;margin-top:16px;">莊千逸 B11A01321</p>
+
+            </div>
+        </section>
+    </main>
+
+    <footer>© 2025 AS04 流浪女孩・單頁練習 — sticky-top & fixed background demo</footer>
+</body>
+
+</html>
