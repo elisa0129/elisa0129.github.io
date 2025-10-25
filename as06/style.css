@@ -1,492 +1,190 @@
-/* Reset & base */
+/* ===== 基礎：單色背景、900px 置中 ===== */
 :root{
-    --bg:#0f1115;
-    --card-bg:#fff;
-    --muted: #7d7d7d;
-    --accent: #9b3cff;
+  --page-bg:#05080f;
+  --muted:#7d7d7d;
+  --card-shadow:0 16px 44px rgba(0,0,0,.48);
+  --focus-mask: rgba(0,0,0,0.45); /* Focus 遮罩透明度 */
 }
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
-    margin:0;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-    background: linear-gradient(180deg,#061018 0%, #0f1624 100%);
-    color:#e9eef6;
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    padding:2rem;
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+  background:var(--page-bg);
+  color:#e9eef6;
+  line-height:1.6;
+  padding:2rem;
 }
-
-/* header */
-.site-header{max-width:900px;margin:0 auto 2rem}
+.site-header,.site-footer,main{max-width:900px;margin:0 auto}
+.site-header{margin-bottom:2rem}
 .site-header h1{margin:0 0 .25rem;font-size:2rem}
 .lead{color:var(--muted)}
-
-/* main layout */
 main{max-width:900px;margin:0 auto}
+
+/* ===== 卡片分段 ===== */
 .content-section{
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    padding:2rem;
-    border-radius:10px;
-    margin:2rem 0;
-    transition: filter 450ms ease, transform 450ms ease, box-shadow 450ms ease;
-    transform-origin: center top;
-    min-height: 320px; /* 讓章節稍長，方便觸發 scroll 效果 */
-    position: relative;
+  position:relative;
+  border-radius:12px;
+  padding:2rem;
+  margin:2.4rem 0;
+  background:#182540;               /* 單一卡片底色，避免背景疊色 */
+  box-shadow:var(--card-shadow);
 }
 
-/* Simplify focus-dim: avoid filter/blur/transform thrashing; only change overlay opacity & subtle shadow */
-.content-section{
-    /* ensure children above overlay */
-    position: relative;
-    z-index: 0;
-}
-.content-section > *{
-    position: relative;
-    z-index: 2;
-}
-.content-section::after{
-    /* default overlay (hidden) */
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-    background: linear-gradient(180deg, rgba(6,10,16,0.0), rgba(4,6,10,0.0));
-    mix-blend-mode: multiply;
-    opacity: 0;
-    transition: opacity 240ms ease, background 240ms ease, box-shadow 240ms ease;
-    z-index: 1;
-    will-change: opacity;
+/* 標題徽章（沿用你原感覺） */
+.section-header{display:flex;align-items:center;gap:12px;margin:0 0 .6rem}
+.section-badge{
+  display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.4px;
+  padding:6px 10px;border-radius:999px;color:#04102a;
+  background:linear-gradient(90deg,#9be9ff,#d9b8ff);
+  border:1px solid rgba(255,255,255,0.14);
+  box-shadow:0 8px 22px rgba(10,8,20,0.45);
 }
 
-/* focus-dim only increases overlay opacity and a lightweight shadow (cheap repaint) */
-.content-section.focus-dim::after{
-    background: linear-gradient(180deg, rgba(6,10,16,0.36), rgba(4,6,10,0.48));
-    opacity: 1;
+/* ===== 1) Focus mode（純 CSS scroll-driven） ===== */
+/* 第一段設為 view timeline 來源 */
+.focus-target{
+  view-timeline-name: --focus;
+  view-timeline-axis: block;
 }
 
-/* keep other heavy transforms/filters off the parent to avoid repaints while scrolling */
-.content-section.focus-dim{
-    /* avoid changing filter/backdrop/transform here */
-    box-shadow: 0 16px 36px rgba(0,0,0,0.32);
-    border-radius:10px;
-    transition: box-shadow 260ms ease;
+/* 疊層：提早開始（cover 75%）到 exit 100% 變暗 */
+.focus-target::after{
+    mix-blend-mode: normal; 
+  content:"";
+  position:absolute;inset:0;border-radius:inherit;
+  background:var(--focus-mask);
+  opacity:0;
+  pointer-events:none;
+  animation: focusDim 1 both;
+  animation-timeline: --focus;
+  /* ★ 原 85% → 調成 75%：更早開始暗 */
+  animation-range: cover 75% exit 100%;
+}
+/* 同步輕微降亮 */
+.focus-target{
+  animation: focusFilter 1 both;
+  animation-timeline: --focus;
+  animation-range: cover 75% exit 100%;
+}
+@keyframes focusDim{ from{opacity:0} to{opacity:1} }
+@keyframes focusFilter{ 
+  from { filter: brightness(1) saturate(1); } 
+  to   { filter: brightness(0.6) saturate(0.8); }  /* ← 更暗、更對比 */
 }
 
-/* if you had focus-strong specific styles, keep them lightweight (no filter/backdrop) */
-.content-section.focus-dim.focus-strong::after{
-    background: linear-gradient(180deg, rgba(40,18,70,0.44), rgba(12,6,28,0.56));
-    opacity: 1;
+
+/* 你的裝飾風格（保留） */
+.focus-strong{
+  background: linear-gradient(180deg, rgba(250,250,255,0.2), rgba(240,245,255,0.1));
+  border: 1px solid rgba(210,200,255,0.6);
+}
+.focus-strong::before{
+  content:'';
+  position:absolute; left:12px; top:16px; bottom:16px; width:6px; border-radius:6px;
+  background: linear-gradient(180deg,#6fe8ff,#9b3cff);
+  box-shadow: 0 10px 24px rgba(107,232,255,0.12);
+  pointer-events:none;
 }
 
-/* 文字色彩微調以強化被淡化的感覺，同時保持可讀性 */
-.content-section.focus-dim h2,
-.content-section.focus-dim h3,
-.content-section.focus-dim p,
-.content-section.focus-dim li,
-.content-section.focus-dim .hint {
-    color: rgba(233,238,246,0.60);
-    position: relative;
-    z-index: 1; /* 文字置於覆蓋層之上 */
-}
-
-/* 強化版：About Westlife 保持較明顯的邊框與較淺卡片底，但去除任何模糊 */
-.content-section.focus-dim.focus-strong{
-    filter: none;
-    transform: scale(.985) translateY(-6px);
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.20), 0 28px 56px rgba(0,0,0,0.60);
-    border-radius:10px;
-    transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
-}
-
-/* focus-strong 的覆蓋層，也完全不使用 blur */
-.content-section.focus-dim.focus-strong::after{
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(180deg, rgba(40,18,70,0.44), rgba(12,6,28,0.56));
-    mix-blend-mode: normal;
-    opacity: 1;
-    z-index: 0;
-}
-
-/* 同時微弱調整內文顏色以強化「被淡化」效果，但保留可讀性 */
-.content-section.focus-dim h2,
-.content-section.focus-dim h3,
-.content-section.focus-dim p,
-.content-section.focus-dim li,
-.content-section.focus-dim .hint {
-    color: rgba(233,238,246,0.55);
-}
-
-/* --- 強化版：只針對 About Westlife（已在 HTML 加上 .focus-strong） --- */
-.content-section.focus-dim.focus-strong{
-    /* 更進一步變暗、降低飽和並稍微收縮 */
-    filter: grayscale(1) saturate(.18) brightness(.30) contrast(.72);
-    transform: scale(.978) translateY(-10px);
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.24), 0 30px 60px rgba(0,0,0,0.75);
-    transition: filter 220ms ease, transform 220ms ease, box-shadow 220ms ease;
-}
-
-/* 針對 About Westlife（.focus-strong）在一般與 focus-dim 時提升對比 */
-.content-section.focus-strong{
-    /* 輕淺紫色卡片底，與深藍背景形成明顯對比 */
-    background: linear-gradient(180deg, rgba(240,230,255,0.16), rgba(245,242,250,0.06));
-    border: 1px solid rgba(180,150,255,0.50);
-    box-shadow: 0 14px 48px rgba(10,8,20,0.65);
-    transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
-    position: relative;
-    overflow: visible;
-}
-
-/* 左側強調條，增加視覺識別 */
-.content-section.focus-strong::before{
-    content: '';
-    position: absolute;
-    left: 12px;
-    top: 16px;
-    bottom: 16px;
-    width: 6px;
-    border-radius: 6px;
-    background: linear-gradient(180deg,#6fe8ff,#9b3cff);
-    box-shadow: 0 10px 24px rgba(107,232,255,0.12);
-    pointer-events: none;
-}
-
-/* 當被淡化時保留紫色邊框/強調條，但降低亮度（仍與背景分離） */
-.content-section.focus-dim.focus-strong{
-    filter: brightness(.78) saturate(.85) grayscale(.05);
-    transform: scale(.978) translateY(-8px);
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.22), 0 30px 60px rgba(0,0,0,0.60);
-    border-radius:10px;
-    border: 1px solid rgba(155,60,255,0.20);
-    background: linear-gradient(180deg, rgba(130,50,220,0.10), rgba(18,12,30,0.18));
-    transition: background 220ms ease, transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
-}
-
-/* 減少 dim 時 ::after 覆蓋的強度（避免整塊變成太深） */
-.content-section.focus-dim.focus-strong::after{
-    background: linear-gradient(180deg, rgba(60,20,90,0.30), rgba(18,6,32,0.42));
-    mix-blend-mode: normal;
-    opacity: 0.95;
-    /* backdrop-filter: blur(4px) saturate(.7);  <-- 秮除 */
-    border-radius: inherit;
-}
-
-/* Flip card styles */
-.card-section{
-    display:flex;
-    flex-direction:column;
-    gap:1rem;
-
-    /* 不再用大 margin-top 推整個卡片區塊（避免翻卡被移位） */
-    margin-top: 0.6rem;   /* 小幅保留間距，或設為 0 如果想完全靠近上一節 */
-    padding-top: 1.2rem;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    position: relative;
-    z-index: 2;
-}
+/* ===== 2) Flip card（純 CSS；前後兩面各自旋轉） ===== */
+.card-section{display:flex;flex-direction:column;gap:1rem}
 .flip-card{
-    width:100%;
-    max-width:700px;
-    height:350px;
-    margin:0 auto;
-    perspective:1200px;
+  width:100%;max-width:700px;height:350px;margin:0 auto;perspective:1200px;
+  /* 讓卡片也有自己的 timeline */
+  view-timeline-name: --card;
+  view-timeline-axis: block;
 }
 .card-inner{
-    width:100%;
-    height:100%;
-    position:relative;
-    /* keep perspective on parent; faces will animate themselves */
-    transition: none; /* faces handle their own transitions */
-    transform-style:preserve-3d;
-    -webkit-transform-style:preserve-3d; /* Safari */
-    border-radius:12px;
-    box-shadow: 0 10px 30px rgba(2,6,23,0.6);
-    overflow:hidden;
+  width:100%;height:100%;position:relative;transform-style:preserve-3d;
+  border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,0.6);overflow:hidden;
 }
 .card-face{
-    position:absolute;
-    inset:0;
-    backface-visibility:hidden;
-    -webkit-backface-visibility:hidden; /* Safari */
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-direction:column;
-    color: #031027;
-    will-change: transform, opacity;
-    /* animate each face directly to avoid ghosting */
-    transition: transform 800ms cubic-bezier(.2,.9,.28,1), opacity 220ms ease;
-    transform-origin: center;
+  position:absolute;inset:0;backface-visibility:hidden;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  color:#031027;
 }
-/* front/back initial transforms (faces rotate individually) */
+/* 初始：顯示前面、背面朝內 */
+.card-front{transform:rotateY(0deg);background:linear-gradient(180deg,#ffffff,#f6f8ff);padding:1.2rem; z-index:2}
+.card-back {transform:rotateY(180deg);background:linear-gradient(180deg,#fff,#f6f6f8);padding:1.4rem;text-align:left; z-index:1}
+.card-back .back-content{ color:#071428; }
+
+/* 使用同一條 timeline 在靠近中線時切換前後面（45%→55%） */
 .card-front{
-    transform: rotateY(0deg);
-    z-index:2;
-    background: linear-gradient(180deg, #ffffff, #f6f8ff);
-    padding: 1.2rem;
+  animation: frontFlipOut 1 both;
+  animation-timeline: --card;
+  animation-range: cover 45% cover 55%;
 }
 .card-back{
-    transform: rotateY(180deg);
-    z-index:1;
-    background: linear-gradient(180deg,#fff,#f6f6f8);
-    padding:1.4rem;
-    text-align:left;
+  animation: backFlipIn 1 both;
+  animation-timeline: --card;
+  animation-range: cover 45% cover 55%;
 }
-/* ensure back text is visible and legible */
-.card-back .back-content{
-    color:#071428;
-    font-size:1rem;
-    line-height:1.5;
+/* 前面：0 → -180，同步把透明度淡出、把層級放低 */
+@keyframes frontFlipOut{
+  0%   { transform:rotateY(0deg);   opacity:1; z-index:2; }
+  49%  { opacity:0.02; z-index:2; }
+  50%  { transform:rotateY(-90deg); opacity:0; z-index:1; }
+  100% { transform:rotateY(-180deg); opacity:0; z-index:1; }
 }
-
-/* flip state: rotate faces to reveal back */
-.flip-card.flip .card-front{
-    transform: rotateY(-180deg);
-    opacity:0; /* fade front slightly to avoid leftover artifacts */
-    pointer-events:none;
+/* 後面：180 → 0，同步把透明度淡入、層級墊高（確保看得到文字） */
+@keyframes backFlipIn{
+  0%   { transform:rotateY(180deg); opacity:0; z-index:1; }
+  50%  { transform:rotateY(90deg);  opacity:0.02; z-index:2; }
+  100% { transform:rotateY(0deg);   opacity:1; z-index:2; }
 }
-.flip-card.flip .card-back{
-    transform: rotateY(0deg);
-    z-index:3;
-    opacity:1;
-}
-
-/* remove the old inner rotation rule if present */
-.flip-card.flip .card-inner{
-    transform: none !important;
-    -webkit-transform: none !important;
-}
-
-/* Hint text */
 .hint{color:var(--muted);font-size:.95rem}
 
-/* Underline-trigger spans */
+/* ===== 3) Lyrics underline（純 CSS） ===== */
+.lyrics-box{
+  background: rgba(255,255,255,0.06);
+  border-radius:8px;
+  padding:1rem 1.2rem;
+  margin-top:0.6rem;
+  box-shadow: 0 8px 20px rgba(2,6,23,0.45);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.lyrics-box p{ margin:0.6rem 0; color:#e9eef6; font-size:1rem }
+
 .underline-trigger{
-    position: relative;
-    display: inline-block;
-    padding: 0 .18rem;
-    vertical-align: baseline;
-    transition: color 300ms ease, transform 260ms ease;
-    /* 預設變數（0..1） */
-    --underline-scale: 0;
+  position: relative;
+  display: inline-block;
+  padding: 0 .18rem;
+  vertical-align: baseline;
+  view-timeline-name: --u;
+  view-timeline-axis: block;
 }
 .underline-trigger::after{
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -6px;
-    height: 4px;
-    width: 100%;                      /* 滿寬但用 scaleX 控制可視寬度 */
-    background: linear-gradient(90deg,#ffdfe8,#ff7a7a);
-    border-radius: 3px;
-    transform-origin: left center;
-    transform: scaleX(var(--underline-scale, 0));
-    transition: transform 640ms cubic-bezier(.2,.9,.28,1); /* 長、平滑動畫 */
-    will-change: transform;
-    pointer-events: none;
-}
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 4px;
+  width: 100%;
+  background: linear-gradient(90deg,#ffdfe8,#ff7a7a);
+  border-radius: 3px;
+  transform-origin: left center;
+  transform: scaleX(0);
+  will-change: transform;
 
-/* 當字串正在被「繪製」時，強制使用更平滑的動畫（可覆蓋） */
-.underline-trigger.drawing::after{
-    transition-duration: 760ms;
-    transition-timing-function: cubic-bezier(.16,.9,.3,1);
+  /* 進場前半段畫線：entry 0% → cover 60% */
+  animation: drawUnderline 1 both;
+  animation-timeline: --u;
+  animation-range: entry 0% cover 60%;
 }
-
-/* 當某個 span 正在繪製，暫時降低該章節的 dim 效果（避免看起來像被模糊/過度淡化） */
-.content-section.underline-active.focus-dim{
-    /* 移除強烈 filter，使正在繪製的元素看起來更清晰 */
-    filter: none !important;
-    transform: none !important;
-}
-
-/* 同時把覆蓋層變淡，避免整塊過暗 */
-.content-section.underline-active.focus-dim::after{
-    opacity: 0.28; /* 更淡的覆蓋，使正在畫線時內容更清晰 */
-    background: linear-gradient(180deg, rgba(3,6,12,0.18), rgba(2,4,8,0.28));
-}
+@keyframes drawUnderline{ from{ transform: scaleX(0) } to{ transform: scaleX(1) } }
 
 /* footer */
-.site-footer{max-width:900px;margin:3rem auto 0;color:var(--muted);text-align:center;font-size:.9rem}
+.site-footer{margin-top:3rem;color:var(--muted);text-align:center;font-size:.9rem}
 
-/* small screens */
+/* 響應式 */
 @media (max-width:600px){
-    body{padding:1rem}
-    .card-inner{transition-duration:600ms}
-    .site-header h1{font-size:1.4rem}
+  body{padding:1rem}
+  .site-header h1{font-size:1.4rem}
 }
 
-/* Respect reduced motion preference */
-@media (prefers-reduced-motion: reduce){
-    .card-inner, .underline-trigger::after, .content-section{transition:none}
-}
-
-/* small section header with badge for About Westlife */
-.section-header{display:flex;align-items:center;gap:12px;margin:0 0 0.6rem 0}
-.section-badge{
-    display:inline-block;
-    font-size:0.78rem;
-    font-weight:700;
-    letter-spacing:0.4px;
-    padding:6px 10px;
-    border-radius:999px;
-    color:#04102a;
-    background: linear-gradient(90deg,#9be9ff,#d9b8ff);
-    box-shadow: 0 8px 22px rgba(10,8,20,0.45);
-    border: 1px solid rgba(255,255,255,0.14);
-    transition: transform 220ms ease, opacity 220ms ease, box-shadow 220ms ease;
-    transform-origin:left center;
-}
-
-/* When the section is dimmed reduce badge prominence slightly */
-.content-section.focus-dim .section-badge,
-.content-section.focus-dim.focus-strong .section-badge{
-    opacity:0.68;
-    transform: translateX(-4px) scale(0.98);
-    box-shadow: 0 6px 16px rgba(6,6,12,0.48);
-}
-/* Ensure badge keeps good contrast on very light backgrounds */
-@media (prefers-color-scheme: light){
-    .section-badge{ color:#08102a }
-}
-
-/* --- 修正：讓緊接在 flip card 之後的章節（Lyrics Highlights）往下推，避免卡在兩種背景之間 --- */
-.card-section + .content-section{
-    margin-top: 3.6rem;   /* 拉大間距，確保清楚分隔 */
-    padding-top: 1rem;    /* 額外內距，讓內容不靠近分隔線 */
-    border-top: none;     /* 防止跟 card-section 的頂部線重複 */
-}
-
-/* 建立 content-section 的堆疊順序，確保不會蓋到卡片 */
-.content-section{
-    position: relative;
-    z-index: 1;
-}
-
-/* Lyrics box: 明確背景、內距與間距，避免卡在兩種背景中間 */
-.lyrics-box{
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    border-radius:8px;
-    padding:1rem 1.2rem;
-    margin-top:0.6rem;
-    box-shadow: 0 8px 20px rgba(2,6,23,0.45);
-    border: 1px solid rgba(255,255,255,0.03);
-}
-
-/* 單行段落微調 */
-.lyrics-box p{
-    margin:0.6rem 0;
-    color: #e9eef6;
-    font-size:1rem;
-}
-
-/* Hide bottom "more" block (fallback selectors) */
-.more,
-#more,
-.more-section,
-.section-more {
-    display: none !important;
-    visibility: hidden !important;
-    height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    overflow: hidden
-}
-
-/* color-strip: single tall section with a sticky viewport-sized background that changes per-step */
-.color-strip{
-    position: relative;
-    /* tall enough to contain all step viewports (4 steps => 4 * 100vh) */
-    height: calc(4 * 100vh);
-    margin: 2.4rem 0;
-    overflow: visible;
-}
-
-/* sticky background that fills the viewport while scrolling inside .color-strip */
-.color-strip .color-bg{
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: 0;
-    border-radius: 0;
-    background: linear-gradient(skyblue, skyblue);
-    transition: background 560ms ease;
-    will-change: background;
-}
-
-/* each "step" is a viewport-height invisible sentinel used to switch backgrounds */
-.color-strip .step{
-    height: 100vh;
-    width: 100%;
-    pointer-events: none; /* invisible/interaction-free */
-}
-
-/* content that sits above the sticky background (readable) */
-.color-strip .color-content{
-    position: relative;
-    z-index: 2;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 40vh 1rem 8rem; /* start content roughly centered in first viewport */
-    color: var(--text, #e9eef6);
-    text-align: center;
-}
-
-/* ensure content text sits above any overlay and remains readable */
-.color-strip .color-content *{ position: relative; z-index: 2; }
-
-/* small responsive tweaks */
-@media (max-width: 600px){
-    .color-strip .color-content{ padding: 30vh 1rem 4rem; font-size: 0.95rem; }
-}
-
-/* color-section: each section is full-viewport-ish and uses --bg for its highlight background */
-.color-section{
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    padding: 4rem 1rem;
-    margin: 1.6rem 0;
-    border-radius: 12px;
-    transition: background 560ms ease, box-shadow 360ms ease, transform 260ms ease;
-    background: transparent;   /* default neutral */
-    position: relative;
-    overflow: hidden;
-}
-
-/* inner wrapper keeps text readable and constrained */
-.color-section .section-inner{
-    max-width: 900px;
-    margin: 0 auto;
-    z-index: 2;
-}
-
-/* when section becomes active, apply its --bg background */
-.color-section.in-view{
-    background: var(--bg, rgba(255,255,255,0.03));
-    box-shadow: 0 18px 48px rgba(2,6,23,0.45);
-    transform: translateY(-4px);
-}
-
-/* ensure text and UI remain above background */
-.color-section > .section-inner, .color-section .lyrics-box, .color-section .flip-card{
-    position: relative;
-    z-index: 3;
-}
-
-/* slightly dim non-active sections to increase contrast (optional) */
-.color-section:not(.in-view){
-    /* minimal visual de-emphasis without heavy filter */
-    opacity: 0.95;
-}
-
-/* small screens adjust padding */
-@media (max-width:600px){
-    .color-section{ padding: 3rem 1rem; border-radius:10px }
+/* 無支援 scroll-driven 時的退場處理 */
+@supports not (animation-timeline: view()){
+  .focus-target::after{ display:none }
+  .card-front,.card-back{ transform:none; opacity:1 }
 }
