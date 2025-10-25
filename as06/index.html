@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Assignment6 — Westlife theme</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <h1>Westlife — Scroll Interaction Demo</h1>
+        <p class="lead">三種由 Scroll 觸發的動畫：Focus mode、翻卡、與文字底線動畫。</p>
+    </header>
+
+    <main>
+        <!-- Focus mode sections (當章節底部將離開視窗時降低色調) -->
+        <section class="content-section focus-strong">
+            <div class="section-header">
+                <span class="section-badge">Focus Mode</span>
+                <h2>About Westlife</h2>
+            </div>
+            <p>
+                Westlife 是一組愛爾蘭的流行樂隊，以抒情歌曲聞名。當你捲動到這個章節的底部即將離開畫面時，此區塊會進入 Focus mode（色調降低，讓下一章節更醒目）。
+            </p>
+            <p>
+                成軍於 1998 年的 Westlife 以溫柔的和音、動人的旋律聞名於世。他們在全球發行多張暢銷專輯，並以情歌見長，
+                歌詞多談愛情、成長與希望。這裡放幾句歌詞片段與簡短背景，讓閱讀時更有情境。
+            </p>
+            <p>
+                代表曲目：Flying Without Wings、You Raise Me Up、My Love 等。1999–2005 年是他們商業高峰期，之後仍多次重組巡演，
+                累積大量忠實聽眾。
+            </p>
+            <h4>小檔案</h4>
+            <ul>
+                <li>成立：1998（愛爾蘭）</li>
+                <li>風格：流行 / 抒情</li>
+                <li>代表作：You Raise Me Up（廣為翻唱）</li>
+            </ul>
+            <p>試著捲動觀看下一個章節。</p>
+        </section>
+
+        <!-- Flip card: 當卡片捲動到視窗一半時翻面 -->
+        <section class="card-section">
+            <h2>Flip Card</h2>
+            <div class="flip-card" aria-hidden="false">
+                <div class="card-inner">
+                    <div class="card-face card-front">
+                        <img src="https://picsum.photos/id/1005/600/350" alt="band photo">
+                        <div class="caption">Westlife — Front</div>
+                    </div>
+                    <div class="card-face card-back">
+                        <div class="back-content">
+                            <h3>Westlife 簡介</h3>
+                            <p>
+                                Westlife 是來自愛爾蘭的流行男孩團體，1998 年成軍，以溫柔的抒情曲與和聲聞名。
+                                他們的代表作如「Flying Without Wings」「You Raise Me Up」等，長期佔據排行榜並在全球巡迴演出，
+                                為無數聽眾帶來感動與共鳴。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="hint">把卡片捲到畫面中間看看效果。</p>
+        </section>
+
+        <!-- Underline trigger: 當被 <span> 圈選的文字進入畫面時加底線動畫 -->
+        <section class="content-section">
+            <h2>Lyrics Highlights</h2>
+            <div class="lyrics-box">
+                <p><span class="underline-trigger">Here we go, lost in the lessons</span> — Sometimes I mess up my intentions</p>
+                <p><span class="underline-trigger">I get lost, the cost</span> — Was losing everything I've known</p>
+                <p><span class="underline-trigger">Laying here, staring at the ceiling</span> — Sometimes still dealing with the feelings</p>
+                <p><span class="underline-trigger">I never thought that I was that strong</span> — To carry on, carry on tonight</p>
+                <p><span class="underline-trigger">Forgiveness in your eyes</span> — All I know is you shown me</p>
+                <p><span class="underline-trigger">It's a beautiful world</span> — <span class="underline-trigger">It's a beautiful world</span></p>
+                <p><span class="underline-trigger">You know my flaws</span> — But you don't care, can take them all</p>
+                <p><span class="underline-trigger">We're writing history</span> — Life's made up of small victories</p>
+            </div>
+            <p>持續捲動，可看到每個被圈選文字的底線分別觸發。</p>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>Assignment 6 — Scroll-triggered animations</p>
+    </footer>
+
+    <script>
+    // IntersectionObservers 控制三種效果
+
+    // 1) Flip card: 在「畫面中間區域」時加上 .flip，離開時移除（會翻回）
+    const flipCards = document.querySelectorAll('.flip-card');
+    const flipObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            // 進入中間區域時翻開，離開時翻回
+            entry.target.classList.toggle('flip', entry.isIntersecting);
+        });
+    }, {
+        root: null,
+        rootMargin: '-50% 0px -50% 0px', // 中央區域：上下各收縮 50%
+        threshold: 0
+    });
+    flipCards.forEach(el => flipObserver.observe(el));
+
+    // 2) Focus mode: 當章節的底部即將離開畫面時（提前觸發）加入 .focus-dim
+    const sections = document.querySelectorAll('.content-section');
+
+    // per-section debounce timers to avoid rapid toggles (reduce repaints)
+    const focusTimers = new WeakMap();
+
+    const focusObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const el = entry.target;
+            // clear any pending timer for this section
+            const pending = focusTimers.get(el);
+            if (pending) clearTimeout(pending);
+
+            // debounce toggle so we don't thrash styles while scrolling
+            const delay = 200; // ms — 增加到 200ms 穩定性較好
+            const id = setTimeout(() => {
+                // 當可見比例低於 0.6 就視為要 dim（你可再調整）
+                if (entry.intersectionRatio < 0.6) {
+                    el.classList.add('focus-dim');
+                } else {
+                    el.classList.remove('focus-dim');
+                }
+                focusTimers.delete(el);
+            }, delay);
+
+            focusTimers.set(el, id);
+        });
+    }, {
+        root: null,
+        rootMargin: '0px 0px -25% 0px', // 提前判定
+        threshold: [0, 0.25, 0.5, 0.75, 1]
+    });
+    sections.forEach(s => focusObserver.observe(s));
+
+    // 3) Underline on span: 當 span 進入視窗時逐步畫線（不要改父區塊以避免閃爍）
+    const triggers = document.querySelectorAll('.underline-trigger');
+
+    // per-element RAF map + small-change guard to reduce noisy updates
+    const rafMap = new WeakMap();
+    const prevMap = new WeakMap();
+
+    const underlineObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const el = entry.target;
+            const pct = Math.min(1, Math.max(0, entry.intersectionRatio || 0));
+            const prev = prevMap.get(el) || 0;
+
+            // only update when change is significant to avoid micro-flutters
+            if (Math.abs(pct - prev) >= 0.04) { // guard widened to 0.04
+                prevMap.set(el, pct);
+                const prevRaf = rafMap.get(el);
+                if (prevRaf) cancelAnimationFrame(prevRaf);
+
+                const id = requestAnimationFrame(() => {
+                    // set a 0..1 scale var (CSS transform used in CSS)
+                    el.style.setProperty('--underline-scale', pct.toFixed(3));
+                    rafMap.delete(el);
+                });
+                rafMap.set(el, id);
+            }
+
+            // update local classes but DO NOT toggle parent .focus-dim here
+            if (pct > 0 && pct < 1) {
+                el.classList.add('drawing');
+                el.classList.remove('active');
+            } else if (pct >= 1) {
+                el.classList.remove('drawing');
+                el.classList.add('active');
+            } else {
+                el.classList.remove('drawing', 'active');
+            }
+        });
+    }, { threshold: Array.from({length: 21}, (_,i)=>i/20) }); // 多段 threshold 提升平滑度
+    triggers.forEach(t => underlineObserver.observe(t));
+
+    // Accessibility: 如果 user 選擇 reduces-motion，關閉動畫（簡單處理）
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll('.flip-card, .card-inner, .card-face, .underline-trigger, .content-section')
+            .forEach(el => el.style.transition = 'none');
+    }
+    </script>
+</body>
+</html>
