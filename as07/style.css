@@ -1,0 +1,177 @@
+/* 基本重置 */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* outer 為 sticky 區塊，底圖使用 image1（請確認檔名副檔名） */
+#outer {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    /* 已更新為 image1.png */
+    background-image: url("images/image1.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: block;
+}
+
+/* statusbar 在左側，寬度由 JS 變動，背景為 image2 */
+#statusbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%; /* 由 JS 設定 */
+    /* 已更新為 image2.png */
+    background-image: url("images/image2.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    transition: width 120ms linear;
+    z-index: 2;
+}
+
+/* caption 文字放在右側，便於說明 */
+#outer .caption{
+    position: absolute;
+    right: 3%;
+    top: 12%;
+    width: 34%;
+    padding: 1.2rem;
+    background: rgba(255,255,255,0.75);
+    border-radius: 8px;
+    z-index: 3;
+    color: #111;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "Helvetica Neue", Arial;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+}
+
+#outer .caption h1{ font-size: 1.6rem; margin-bottom: 0.4rem; }
+#outer .caption p{ font-size: 0.95rem; line-height: 1.45; margin-bottom: 0.6rem; }
+
+/* 新增 horizontal-section 與 horizontal-section-reverse 樣式 */
+body { overflow-x: hidden; }
+
+.banner {
+    height: 100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2rem;
+    background:#2b87d8;
+    color:#fff;
+}
+
+.scroll-container {
+    height: 800vh; /* 四個區塊的長度（可調） */
+    position: relative;
+}
+
+.horizontal-section {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 400vw; /* 4 個 100vw */
+    display: flex;
+    flex-direction: row;
+    transition: transform 0.1s linear;
+    will-change: transform;
+}
+
+.horizontal-item {
+    width: 100vw;
+    height: 100vh;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+/* 反向水平區塊（隨捲動從左到右） */
+.scroll-container-reverse {
+    height: 800vh;
+    position: relative;
+}
+
+.horizontal-section-reverse {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 400vw;
+    display: flex;
+    flex-direction: row;
+    transition: transform 0.1s linear;
+    will-change: transform;
+}
+
+.vh-100 { height: 100vh; display:flex; align-items:center; justify-content:center; font-size:1.5rem; color:#fff; }
+.footer-1 { background:#111; }
+.footer-2 { background:#f0b000; color:#111; }
+.footer-3 { background:#28a0c7; }
+.footer-4 { background:#1b1b1b; }
+.footer-5 { background:#d07b00; color:#111; }
+.footer-6 { background:#1e88e5; }
+
+/* 統一色調變數（淺藍 + 青綠 + 暖灰） */
+:root{
+    --brand-deep: #0f5673;
+    --brand-mid: #2b9db3;
+    --brand-soft: #bfeaf6;
+    --muted-warm: #f3efe6;
+    --overlay: rgba(15,86,115,0.48);
+    --text-plain: #ffffff;
+}
+
+/* banner：統一風格、淡漸層 */
+.banner{
+    height: 100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: linear-gradient(180deg, var(--brand-mid) 0%, var(--brand-deep) 100%);
+    color: var(--text-plain);
+    padding: 2rem;
+}
+.banner-inner { max-width: 900px; text-align: center; }
+.banner-inner h2 { font-size: 2.2rem; margin-bottom: 0.4rem; letter-spacing: 0.6px; }
+.banner-inner p { opacity: 0.95; font-size: 1rem; }
+
+/* horizontal item overlay（不改變原有水平移動行為）*/
+.horizontal-item { position: relative; }
+.horizontal-item .overlay{
+    position: absolute;
+    left: 3%;
+    bottom: 6%;
+    max-width: 40%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.28));
+    padding: 1rem 1.1rem;
+    border-radius: 8px;
+    color: #fff;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+}
+.horizontal-item .overlay h3 { margin: 0 0 0.25rem 0; font-size: 1.05rem; color: var(--brand-soft); }
+.horizontal-item .overlay p { margin:0; font-size:0.9rem; opacity:0.95; }
+
+/* footer 統一色調與風格（配合敘事段落）*/
+.vh-100 { height: 100vh; display:flex; align-items:center; justify-content:center; font-size:1.15rem; color:var(--text-plain); padding:2rem; }
+.footer-inner { max-width:900px; text-align:center; }
+
+/* 分段色彩（同一調性） */
+.footer-1 { background: linear-gradient(180deg,#123b4a,#0f5673); }
+.footer-2 { background: linear-gradient(180deg,#165c6f,#2b9db3); color:#042e3b; }
+.footer-3 { background: linear-gradient(180deg,#1b6f7f,#59b3c4); }
+.footer-4 { background: linear-gradient(180deg,#0e2d36,#123b4a); }
+.footer-5 { background: linear-gradient(180deg,#163e48,#235f6b); color:#eaeaea; }
+.footer-6 { background: linear-gradient(180deg,#1b4d57,#1e88e5); }
+
+/* caption 小字樣微調（原比較區塊） */
+#outer .caption .small { font-size:0.9rem; opacity:0.9; margin-top:0.6rem; }
+
+/* 響應：overlay 與 caption 在小螢幕調整 */
+@media (max-width: 900px) {
+    .horizontal-item .overlay { max-width: 86%; left: 6%; bottom: 6%; }
+    .banner-inner h2 { font-size:1.6rem; }
+    .horizontal-section, .horizontal-section-reverse { width: 400vw; } /* 保持既有設定 */
+}

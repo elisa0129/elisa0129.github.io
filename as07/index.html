@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>台北街景對比 — W9 作業</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="intro" style="background:deepskyblue;height:100vh; display:flex; align-items:center; justify-content:center; color:#fff;">
+        <div style="max-width:900px; text-align:center; padding:2rem;">
+            <h2 style="margin-bottom:0.5rem;">台北的時間軸</h2>
+            <p style="opacity:0.95; font-size:1rem; line-height:1.6;">
+                這裡展示台北從過去到現在的面貌：老照片記錄著街道與人的記憶，現代街景則映出城市快速變遷的速度與痕跡。
+                捲動比較影像，觀察時光如何改寫街角、建築與生活。
+            </p>
+        </div>
+    </div>
+
+    <div id="scroll-wrap" style="height:300vh;">
+        <div id="outer">
+            <div id="statusbar"></div>
+            <div class="caption">
+                <h1>台北街景 — 過去 vs 現在</h1>
+                <p>左側為「現代街景」，右側為「歷史街照」。透過捲動，比對城市記憶與時間的痕跡。</p>
+                <p class="small"></p>
+            </div>
+        </div>
+    </div>
+
+    <div style="height:100vh;background:grey; display:flex; align-items:center; justify-content:center; color:#fff; text-align:center; padding:2rem;">
+        <div style="max-width:900px;">
+            <h2 style="margin-bottom:0.5rem;">從街角看時代</h2>
+            <p style="opacity:0.95; line-height:1.6;">
+                當老店被新的招牌取代，或是一棟老屋被改建成商辦，城市的輪廓在不知不覺中改變。
+                這段比較希望你能在視覺中找到「持續」與「改變」之間的對話。
+            </p>
+        </div>
+    </div>
+
+    <!-- 新增：水平捲動（正向，使用 image3~image6）與 反向（使用 image7~image10）區塊 -->
+    <div class="banner">
+        <div class="banner-inner">
+            <h2>她的準備旅程</h2>
+            <p>一段為了研究所面試、日夜打磨技藝與勇氣的過程 — 用影像紀錄每一步。</p>
+        </div>
+    </div>
+
+    <div class="scroll-container">
+        <div class="horizontal-section">
+            <div class="horizontal-item" style="background-image:url('images/image3.png')">
+                <div class="overlay"><h3>Step 1 — 決定方向</h3><p>她宣布了目標：研究所。</p></div>
+            </div>
+            <div class="horizontal-item" style="background-image:url('images/image4.png')">
+                <div class="overlay"><h3>Step 2 — 日夜準備</h3><p>筆記本、模擬題、無數次的練習。</p></div>
+            </div>
+            <div class="horizontal-item" style="background-image:url('images/image5.png')">
+                <div class="overlay"><h3>Step 3 — 模擬面試</h3><p>克服緊張，學會在問答中找回自信。</p></div>
+            </div>
+            <div class="horizontal-item" style="background-image:url('images/image6.png')">
+                <div class="overlay"><h3>Step 4 — 成果呈現</h3><p>面試結束，等待錄取信的那段心跳。</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="vh-100 footer-1">
+        <div class="footer-inner">
+            <h3>暫停與回望</h3>
+            <p>準備的日子讓她更了解自己，也更懂得同理他人。</p>
+        </div>
+    </div>
+    <div class="vh-100 footer-2">
+        <div class="footer-inner">
+            <h3>小勝與小挫</h3>
+            <p>每一次嘗試都不是孤單的存在，都是成長的注腳。</p>
+        </div>
+    </div>
+    <div class="vh-100 footer-3">
+        <div class="footer-inner">
+            <h3>向前一小步</h3>
+            <p>她學會把焦慮換成行動。</p>
+        </div>
+    </div>
+
+    <div class="scroll-container-reverse">
+        <div class="horizontal-section-reverse">
+            <div class="horizontal-item" style="background-image:url('images/image7.png')">
+                <div class="overlay"><h3>回顧 — 童年記憶</h3><p>那些簡單的快樂，成為今天的底色。</p></div>
+            </div>
+            <div class="horizontal-item" style="background-image:url('images/image8.png')">
+                <div class="overlay"><h3>回顧 — 失敗與學習</h3><p>眼淚後有更堅定的腳步。</p></div>
+            </div>
+            <div class="horizontal-item" style="background-image:url('images/image9.png')">
+                <div class="overlay"><h3>回顧 — 人際與支持</h3><p>朋友與家人的聲音，陪伴她走過。</p></div>
+            </div>
+            <div class="horizontal-item" style="background-image:url('images/image10.png')">
+                <div class="overlay"><h3>回顧 — 現在的我</h3><p>酸甜苦辣匯成一杯溫暖的茶。</p></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="vh-100 footer-4">
+        <div class="footer-inner">
+            <h3>結語</h3>
+            <p>城市與個人，都在時間中交換著故事與風景。</p>
+        </div>
+    </div>
+    <div class="vh-100 footer-5">
+        <div class="footer-inner">
+            <h3>持續努力</h3>
+            <p>想像、練習、再出發 — 下一個故事正要開始。</p>
+        </div>
+    </div>
+    <div class="vh-100 footer-6">
+        <div class="footer-inner">
+            <h3>感謝觀賞</h3>
+            <p>網頁設計與敘事 第九週作業 莊千逸 B11A01321</p>
+        </div>
+    </div>
+
+    <script>
+    // 計算 sticky 區塊被捲動的進度，並以此設置 #statusbar 的寬度 (0 → 100%)
+    (function(){
+        const wrap = document.getElementById('scroll-wrap');
+        const status = document.getElementById('statusbar');
+
+        function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+        function updateStatusbar() {
+            const rect = wrap.getBoundingClientRect();
+            const winH = window.innerHeight;
+            const total = rect.height - winH;
+            let progress = 0;
+            if (total > 0) {
+                progress = clamp((-rect.top) / total, 0, 1);
+            } else {
+                progress = 1;
+            }
+            status.style.width = (progress * 100) + '%';
+        }
+
+        // horizontal sections
+        const scrollContainers = document.querySelectorAll('.scroll-container, .scroll-container-reverse');
+        function updateHorizontal() {
+            scrollContainers.forEach(container => {
+                const section = container.querySelector('.horizontal-section, .horizontal-section-reverse');
+                if (!section) return;
+                const rect = container.getBoundingClientRect();
+                const winW = window.innerWidth;
+                const winH = window.innerHeight;
+                const total = rect.height - winH;
+                let progress = 0;
+                if (total > 0) {
+                    progress = clamp((-rect.top) / total, 0, 1);
+                } else {
+                    progress = 1;
+                }
+                const maxTranslate = section.scrollWidth - winW; // px
+                if (container.classList.contains('scroll-container')) {
+                    // 正向：從 0 → -maxTranslate
+                    const tx = -progress * maxTranslate;
+                    section.style.transform = `translateX(${tx}px)`;
+                } else {
+                    // 反向：從 -maxTranslate → 0 （隨捲動從左往右）
+                    const tx = - (1 - progress) * maxTranslate;
+                    section.style.transform = `translateX(${tx}px)`;
+                }
+            });
+        }
+
+        function onScroll() {
+            updateStatusbar();
+            updateHorizontal();
+        }
+
+        window.addEventListener('scroll', onScroll, {passive:true});
+        window.addEventListener('resize', () => { updateStatusbar(); updateHorizontal(); });
+        updateStatusbar();
+        updateHorizontal();
+    })();
+    </script>
+</body>
+</html>
