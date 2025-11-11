@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>傳統拼圖（Jigsaw）翻卡示範</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="puzzle" id="puzzle" aria-label="翻卡拼圖"></div>
+
+  <script>
+    // 可調整：列、行（我預設 5x6）
+    const rows = 5;
+    const cols = 6;
+    const imageURL = 'https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=1600&q=80';
+
+    const puzzle = document.getElementById('puzzle');
+    puzzle.style.setProperty('--cols', cols);
+    puzzle.style.setProperty('--rows', rows);
+
+    // jigsaw path 建構（坐標 0..100） — 減小突起 ts、tw 讓更多格數看起來自然
+    function piecePath(top, right, bottom, left, ts = 10, tw = 24) {
+      const w = 100, h = 100;
+      const halfTw = tw / 2;
+      const topEdge = () => {
+        let s = `M 0 0 L ${50 - halfTw} 0 `;
+        if (top === 1) {
+          s += `C ${50 - halfTw/2} 0, ${50 - halfTw/2} ${-ts}, ${50} ${-ts} `;
+          s += `C ${50 + halfTw/2} ${-ts}, ${50 + halfTw/2} 0, ${50 + halfTw} 0 `;
+        } else if (top === -1) {
+          s += `C ${50 - halfTw/2} 0, ${50 - halfTw/2} ${ts}, ${50} ${ts} `;
+          s += `C ${50 + halfTw/2} ${ts}, ${50 + halfTw/2} 0, ${50 + halfTw} 0 `;
+        }
+        s += `L ${w} 0 `;
+        return s;
+      };
+      const rightEdge = () => {
+        let s = `L ${w} ${50 - halfTw} `;
+        if (right === 1) {
+          s += `C ${w} ${50 - halfTw/2}, ${w + ts} ${50 - halfTw/2}, ${w + ts} ${50} `;
+          s += `C ${w + ts} ${50 + halfTw/2}, ${w} ${50 + halfTw/2}, ${w} ${50 + halfTw} `;
+        } else if (right === -1) {
+          s += `C ${w} ${50 - halfTw/2}, ${w - ts} ${50 - halfTw/2}, ${w - ts} ${50} `;
+          s += `C ${w - ts} ${50 + halfTw/2}, ${w} ${50 + halfTw/2}, ${w} ${50 + halfTw} `;
+        }
+        s += `L ${w} ${h} `;
+        return s;
+      };
+      const bottomEdge = () => {
+        let s = `L ${50 + halfTw} ${h} `;
+        if (bottom === 1) {
+          s += `C ${50 + halfTw/2} ${h}, ${50 + halfTw/2} ${h + ts}, ${50} ${h + ts} `;
+          s += `C ${50 - halfTw/2} ${h + ts}, ${50 - halfTw/2} ${h}, ${50 - halfTw} ${h} `;
+        } else if (bottom === -1) {
+          s += `C ${50 + halfTw/2} ${h}, ${50 + halfTw/2} ${h - ts}, ${50} ${h - ts} `;
+          s += `C ${50 - halfTw/2} ${h - ts}, ${50 - halfTw/2} ${h}, ${50 - halfTw} ${h} `;
+        }
+        s += `L 0 ${h} `;
+        return s;
+      };
+      const leftEdge = () => {
+        let s = `L 0 ${50 + halfTw} `;
+        if (left === 1) {
+          s += `C 0 ${50 + halfTw/2}, ${-ts} ${50 + halfTw/2}, ${-ts} ${50} `;
+          s += `C ${-ts} ${50 - halfTw/2}, 0 ${50 - halfTw/2}, 0 ${50 - halfTw} `;
+        } else if (left === -1) {
+          s += `C 0 ${50 + halfTw/2}, ${ts} ${50 + halfTw/2}, ${ts} ${50} `;
+          s += `C ${ts} ${50 - halfTw/2}, 0 ${50 - halfTw/2}, 0 ${50 - halfTw} `;
+        }
+        s += `Z`;
+        return s;
+      };
+      return topEdge() + rightEdge() + bottomEdge() + leftEdge();
+    }
+
+    // 決定相鄰邊的凸/凹（互補）
+    const edgeDirH = Array.from({length: rows}, () => Array(cols - 1).fill(0));
+    const edgeDirV = Array.from({length: rows - 1}, () => Array(cols).fill(0));
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols - 1; c++) edgeDirH[r][c] = ((r + c) % 2 === 0) ? 1 : -1;
+    }
+    for (let r = 0; r < rows - 1; r++) {
+      for (let c = 0; c < cols; c++) edgeDirV[r][c] = ((r + c) % 2 === 0) ? 1 : -1;
+    }
+
+    // 產生每片並 append（維持之前行為）
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const tile = document.createElement('div');
+        tile.className = 'card piece';
+        tile.tabIndex = 0;
+        tile.setAttribute('role','button');
+        tile.setAttribute('aria-pressed','false');
+
+        const top = (r === 0) ? 0 : -edgeDirV[r - 1][c];
+        const bottom = (r === rows - 1) ? 0 : edgeDirV[r][c];
+        const left = (c === 0) ? 0 : -edgeDirH[r][c - 1];
+        const right = (c === cols - 1) ? 0 : edgeDirH[r][c];
+
+        const clipId = `clip-${r}-${c}`;
+        const path = piecePath(top, right, bottom, left, 10, 24);
+
+        const front = document.createElement('div');
+        front.className = 'front';
+        front.innerHTML = `
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin slice">
+            <defs>
+              <clipPath id="${clipId}" clipPathUnits="userSpaceOnUse">
+                <path d="${path}"></path>
+              </clipPath>
+            </defs>
+            <image href="${imageURL}" width="${cols * 100}" height="${rows * 100}" x="${-c * 100}" y="${-r * 100}" clip-path="url(#${clipId})" preserveAspectRatio="xMidYMid slice" />
+            <path d="${path}" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="0.8" clip-path="none" />
+          </svg>
+        `;
+
+        const back = document.createElement('div');
+        back.className = 'back';
+        back.innerHTML = `<div class="back-inner"><h3>碎片 ${r * cols + c + 1}</h3><p>台灣 • 註記</p></div>`;
+
+        tile.appendChild(front);
+        tile.appendChild(back);
+
+        const bringToFront = () => { tile.style.zIndex = 9999; };
+        const resetZ = () => { if (!tile.classList.contains('flipped')) tile.style.zIndex = ''; };
+        tile.addEventListener('mouseenter', bringToFront);
+        tile.addEventListener('focus', bringToFront);
+        tile.addEventListener('mouseleave', resetZ);
+        tile.addEventListener('blur', resetZ);
+
+        tile.addEventListener('click', () => {
+          const flipped = tile.classList.toggle('flipped');
+          tile.setAttribute('aria-pressed', flipped);
+          tile.style.zIndex = flipped ? 9999 : '';
+        });
+        tile.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            const flipped = tile.classList.toggle('flipped');
+            tile.setAttribute('aria-pressed', flipped);
+            tile.style.zIndex = flipped ? 9999 : '';
+          }
+        });
+
+        puzzle.appendChild(tile);
+      }
+    }
+
+    // 絕對定位排版，並設定不規則外框（可關閉）
+    function layoutPieces() {
+      const aspect = 1.25;
+      const containerW = puzzle.clientWidth;
+      const tileW = containerW / cols;
+      const tileH = tileW / aspect;
+      puzzle.style.height = (tileH * rows) + 'px';
+      const pieces = puzzle.querySelectorAll('.card');
+      pieces.forEach((el, idx) => {
+        const r = Math.floor(idx / cols);
+        const c = idx % cols;
+        el.style.position = 'absolute';
+        el.style.left = (c * tileW) + 'px';
+        el.style.top = (r * tileH) + 'px';
+        el.style.width = tileW + 'px';
+        el.style.height = tileH + 'px';
+        el.style.overflow = 'visible';
+      });
+    }
+
+    // 建立不規則外形（範例 polygon，可自己改成 SVG mask）
+    function applyIrregularShape() {
+      // 你可以修改這個 polygon 的點，或用更複雜的 blob 生成
+      const poly = 'polygon(6% 4%, 86% 0%, 100% 18%, 92% 58%, 72% 78%, 48% 94%, 18% 86%, 2% 54%)';
+      puzzle.classList.add('irregular');
+      puzzle.style.clipPath = poly;
+      puzzle.style.WebkitClipPath = poly;
+    }
+
+    window.addEventListener('load', () => { 
+      layoutPieces(); 
+      // 不要套用整體 clip-path，否則會把外緣拼片「切掉」
+      // applyIrregularShape();
+    });
+    window.addEventListener('resize', () => {
+      clearTimeout(window._pzl_resize);
+      window._pzl_resize = setTimeout(() => { layoutPieces(); }, 120);
+    });
+  </script>
+</body>
+</html>
