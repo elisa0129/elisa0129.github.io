@@ -1,0 +1,483 @@
+:root{
+  --paper: #fffef9;
+  --ink: #222;
+  --muted: #6b7280;
+  --red: #C72C41;
+  --jade: #00796b;
+  --radius: 14px;
+  --shadow: 0 18px 40px rgba(0,0,0,.12);
+
+  /* 拼圖格數 */
+  --rows: 4;
+  --cols: 6;
+
+  /* 圖片（可換成你自己的） */
+  --front-img: url("https://picsum.photos/id/1011/1600/1066"); /* 巷弄/街景感 */
+  --back-img:  url("https://picsum.photos/id/1025/1600/1066"); /* 夜色/對照感 */
+
+  /* 水平捲動張數 */
+  --track-items: 5;
+}
+
+*{ box-sizing:border-box }
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color:var(--ink);
+  background:
+    radial-gradient(1200px 600px at 8% -10%, rgba(199,44,65,.06), transparent 60%),
+    radial-gradient(1200px 600px at 90% 110%, rgba(0,121,107,.06), transparent 60%),
+    linear-gradient(90deg,#fbf7f2,#fffefb);
+  overflow-x: hidden;
+}
+
+/* ===== 公用 ===== */
+.section{ padding: clamp(56px, 8vw, 96px) 24px; }
+.container{ width:min(1100px, 92vw); margin:0 auto; }
+.container.narrow{ width:min(820px, 92vw); }
+.center{ text-align:center; }
+.lede{ font-size:clamp(1.05rem, 1.2vw + .8rem, 1.35rem); line-height:1.8; opacity:.9; }
+
+/* ===== Hero ===== */
+.hero{ min-height: 88vh; display:grid; place-items:center; }
+.hero-inner{ text-align:center; padding: 24px; }
+.hero h1{
+  font-weight:900; letter-spacing:.02em;
+  font-size: clamp(2.2rem, 5vw + 1rem, 3.6rem);
+  margin:.2em 0 .1em;
+  background: linear-gradient(90deg, #111, #555);
+  -webkit-background-clip: text; background-clip:text; color:transparent;
+}
+.hero p{ font-size: clamp(1.05rem, 1.2vw + .8rem, 1.35rem); color:#333; opacity:.9; }
+
+/* ===== 定義／引言 ===== */
+.pill-list{ display:flex; flex-wrap:wrap; gap:10px; padding:0; list-style:none; margin-top:14px; }
+.pill-list li{ padding: 8px 12px; border-radius: 999px; background: rgba(0,0,0,.06); font-size:.95rem; }
+.quote blockquote{
+  margin:0; padding:28px clamp(16px,3vw,28px);
+  background:#fff; border-left: 6px solid var(--red);
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+  border-radius: 10px;
+  font-size: clamp(1.1rem, 1.5vw + .8rem, 1.5rem);
+  line-height:1.9;
+}
+
+/* ===== 翻卡拼圖（hover 自動翻；點擊鎖定；再點解除後移出即可恢復 hover） ===== */
+.puzzle-wrap .hint { text-align:center; color:var(--muted); margin:10px 0 24px; }
+.puzzle-grid{
+  --gap: 8px;
+  display:grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  gap: var(--gap);
+  perspective: 1200px;
+  filter: drop-shadow(0 18px 40px rgba(0,0,0,.10));
+}
+.card{
+  position: relative;
+  aspect-ratio: 5 / 4;
+  transform-style: preserve-3d;
+  border-radius: calc(var(--radius) * .8);
+  isolation: isolate;
+}
+.card .front, .card .back{
+  position:absolute; inset:0; border-radius: inherit;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  transition: transform .6s cubic-bezier(.2,.8,.2,1), box-shadow .18s;
+  overflow:hidden;
+}
+/* 正面切片 */
+.card .front{
+  background-image: var(--front-img);
+  background-size: calc(100% * var(--cols)) calc(100% * var(--rows));
+  background-position:
+    calc((var(--x)) * (100% / (var(--cols) - 1)))
+    calc((var(--y)) * (100% / (var(--rows) - 1)));
+  border: 1px solid rgba(255,255,255,.6);
+}
+/* 背面切片 + 遮罩 */
+.card .back{
+  background-image:
+    linear-gradient(135deg, rgba(0,0,0,.35), rgba(0,0,0,.35)),
+    var(--back-img);
+  background-size:
+    cover,
+    calc(100% * var(--cols)) calc(100% * var(--rows));
+  background-position:
+    center,
+    calc((var(--x)) * (100% / (var(--cols) - 1)))
+    calc((var(--y)) * (100% / (var(--rows) - 1)));
+  color:#fff;
+  transform: rotateY(-180deg);
+  text-shadow: 0 2px 6px rgba(0,0,0,.3);
+  display:flex; align-items:center; justify-content:center;
+}
+.back-inner{ text-align:center; padding:14px 12px; }
+.back-inner h3{ margin:0 0 6px; font-size:1rem; font-weight:700; letter-spacing:.03em;}
+.back-inner p { margin:0; font-size:.92rem; opacity:.95; }
+
+/* 點擊層（可鎖定/解除） */
+.card input[type="checkbox"]{
+  position:absolute; inset:0;
+  opacity:0; cursor:pointer; z-index:3;
+}
+
+/* 1) Hover 自動翻（僅限未鎖定） */
+.card:not(:has(input:checked)):hover .front { transform: rotateY(180deg); }
+.card:not(:has(input:checked)):hover .back  { transform: rotateY(0deg); }
+
+/* 2) 點擊鎖定（checked 狀態） */
+.card:has(input:checked) .front { transform: rotateY(180deg); }
+.card:has(input:checked) .back  { transform: rotateY(0deg); }
+
+/* 3) 解除後：為避免你遇到「hover 不回來」，
+   僅在「未鎖定 + 非 hover」時用 focus-within 壓回正面。
+   一離開卡片再回來，hover 行為就恢復。 */
+.card:focus-within:not(:hover):not(:has(input:checked)) .front { transform: rotateY(0deg); }
+.card:focus-within:not(:hover):not(:has(input:checked)) .back  { transform: rotateY(-180deg); }
+
+/* 視覺微動畫 */
+.card:hover { transform: translateZ(16px) scale(1.015); box-shadow: 0 22px 48px rgba(0,0,0,.22); }
+.card:active{ transform: translateZ(10px) scale(1.01); }
+
+/* ===== 純 CSS 水平捲動（sticky 內層滿版＋前導滿版後才開始） ===== */
+.scroll-container-css{
+  --items: var(--track-items);
+  height: 520vh;              /* 滾動距離：越大越慢 */
+  margin-block: 20px 0;
+}
+
+/* ★ 前導滿版：先顯示第一幕，讓使用者看完一屏，再開始水平動畫 */
+.h-intro{
+  position: relative;
+  height: 100vh;
+  display:grid; place-items:center;
+  text-align:center; color:#fff;
+  overflow: clip;
+}
+.h-intro::before{
+  content:""; position:absolute; inset:0; z-index:0; opacity:.95;
+  background-size: cover; background-position:center;
+  filter: contrast(1.02) saturate(1.05);
+}
+.h-intro.h1::before{ background-image: url("https://picsum.photos/id/1067/1600/900"); }
+.h-intro.r1::before{ background-image: url("https://picsum.photos/id/1003/1600/900"); }
+.h-intro .intro-inner{ position:relative; z-index:1; padding: clamp(20px,5vw,60px); }
+.h-intro h3{ font-size: clamp(1.6rem, 2vw + 1rem, 2.4rem); margin:.2em 0; text-shadow:0 2px 18px rgba(0,0,0,.45);}
+.h-intro p { font-size: clamp(1rem, 1.1vw + .8rem, 1.2rem); margin:0; text-shadow:0 2px 14px rgba(0,0,0,.4);}
+.scroll-hint{ display:inline-block; margin-top:10px; font-size:.95rem; opacity:.9; background:rgba(0,0,0,.35); padding:.3em .6em; border-radius:999px; }
+
+/* sticky 內層作為時間軸（滿版時才 cover） */
+.scroll-container-css .horizontal-track{
+  position: sticky; top:0; height: 100vh; overflow: clip;
+  background: linear-gradient(90deg,#fbf7f2,#fffefb);
+  box-shadow: inset 0 -12px 30px rgba(0,0,0,.06);
+
+  view-timeline-name: --hscroll;
+  view-timeline-axis: block;
+}
+.scroll-container-css.reverse .horizontal-track{
+  view-timeline-name: --hscroll-r;
+}
+
+/* 水平列：cover→cover 之間才開始動 */
+.horizontal-strip{
+  display:flex; width: calc(var(--items) * 100vw); height: 100%;
+  will-change: transform;
+  animation: slide-left linear both;
+  animation-timeline: --hscroll;
+  animation-range: cover 0% cover 100%;
+}
+.reverse-strip{
+  animation-name: slide-right;
+  animation-timeline: --hscroll-r;
+  animation-range: cover 0% cover 100%;
+}
+
+@keyframes slide-left{
+  from{ transform: translateX(0); }
+  to  { transform: translateX(calc(-100vw * (var(--items) - 1))); }
+}
+@keyframes slide-right{
+  from{ transform: translateX(calc(-100vw * (var(--items) - 1))); }
+  to  { transform: translateX(0); }
+}
+
+/* 水平卡片 */
+.h-item{
+  width: 100vw; height: 100%; flex: 0 0 100vw;
+  display:grid; place-content:center; gap:10px;
+  padding: clamp(20px, 5vw, 60px);
+  text-align:center; color:#fff;
+  position: relative;
+}
+.h-item::before{
+  content:""; position:absolute; inset:0; z-index:0; opacity:.9;
+  background-size: cover; background-position:center;
+  filter: contrast(1.02) saturate(1.05);
+}
+.h-item > *{ position:relative; z-index:1; }
+.h-item h3{ font-size: clamp(1.4rem, 1.8vw + 1rem, 2.2rem); margin:0; text-shadow:0 2px 18px rgba(0,0,0,.45); }
+.h-item p { font-size: clamp(1rem, 1.1vw + .8rem, 1.2rem); margin:0; text-shadow:0 2px 14px rgba(0,0,0,.4); }
+
+/* 背景圖（可換） */
+.h1::before{ background-image: url("https://picsum.photos/id/1067/1600/900"); }
+.h2::before{ background-image: url("https://picsum.photos/id/1031/1600/900"); }
+.h3::before{ background-image: url("https://picsum.photos/id/1040/1600/900"); }
+.h4::before{ background-image: url("https://picsum.photos/id/1062/1600/900"); }
+.h5::before{ background-image: url("https://picsum.photos/id/1056/1600/900"); }
+
+.r1::before{ background-image: url("https://picsum.photos/id/1003/1600/900"); }
+.r2::before{ background-image: url("https://picsum.photos/id/1012/1600/900"); }
+.r3::before{ background-image: url("https://picsum.photos/id/1016/1600/900"); }
+.r4::before{ background-image: url("https://picsum.photos/id/1043/1600/900"); }
+.r5::before{ background-image: url("https://picsum.photos/id/1035/1600/900"); }
+
+/* 降級支援：不支援 view-timeline → 允許橫向滑動 */
+@supports not (animation-timeline: view()){
+  .scroll-container-css{ height:auto; }
+  .horizontal-track{ overflow-x:auto; }
+  .horizontal-strip,
+  .reverse-strip{
+    animation:none; transform:none; width: max(100%, calc(var(--track-items) * 100vw));
+  }
+  .h-item{ min-width: 100vw; }
+}
+
+/* 手機微調 */
+@media (max-width: 640px){
+  .scroll-container-css{ height: 480vh; }
+  .h-item{ padding: 28px; }
+  .card{ aspect-ratio: 1 / 1; }
+}
+
+/* ===== 視差卷軸（純 CSS scroll-driven animation） ===== */
+.parallax{
+  /* 整段滾動距離（可調慢快） */
+  height: 260vh;
+  padding: 0;
+  margin: 0;
+}
+
+/* sticky 一屏，內含三層視差 */
+.parallax .scene{
+  position: sticky; top: 0; height: 100vh; overflow: clip;
+  background: linear-gradient(180deg,#fbf7f2 0%, #fffefb 60%, #fbf7f2 100%);
+  /* 定義滾動時間軸 */
+  view-timeline-name: --para;
+  view-timeline-axis: block;
+}
+
+/* 圖片可自由換成台灣街景；先給預設 */
+:root{
+  --para-back: url("https://picsum.photos/id/1015/2000/1300"); /* 遠景：山／天際 */
+  --para-mid:  url("https://picsum.photos/id/1043/2000/1300"); /* 中景：巷弄／建物 */
+  --para-fore: url("https://picsum.photos/id/1062/2000/1300"); /* 近景：騎樓／人流 */
+}
+
+/* 三層深度：越近位移越大 */
+.parallax .layer{
+  position: absolute; inset: -8vh -8vw;  /* 反裁切，避免位移露白 */
+  background-size: cover; background-position: center;
+  will-change: transform;
+  filter: contrast(1.03) saturate(1.05);
+}
+.parallax .layer.back{  background-image: var(--para-back);  animation: para-back linear both;  animation-timeline: --para; animation-range: entry 0% exit 100%; }
+.parallax .layer.mid{   background-image: var(--para-mid);   animation: para-mid  linear both;  animation-timeline: --para; animation-range: entry 0% exit 100%; }
+.parallax .layer.fore{  background-image: var(--para-fore);  animation: para-fore linear both;  animation-timeline: --para; animation-range: entry 0% exit 100%; }
+
+/* 視差位移（可微調比例） */
+@keyframes para-back{
+  from{ transform: translateY(-6%)  scale(1.08); }
+  to  { transform: translateY( 6%)  scale(1.12); }
+}
+@keyframes para-mid{
+  from{ transform: translateY(-12%) scale(1.06); }
+  to  { transform: translateY( 12%) scale(1.10); }
+}
+@keyframes para-fore{
+  from{ transform: translateY(-20%) scale(1.04); }
+  to  { transform: translateY( 20%) scale(1.08); }
+}
+
+/* 置中文案（浮在三層之上） */
+.parallax .para-copy{
+  position: relative; z-index: 2;
+  height: 100vh; display: grid; place-content: center; text-align: center;
+  color: #fff;
+  padding: clamp(20px,5vw,60px);
+}
+.parallax .para-copy::before{
+  /* 文字可讀性的柔光幕 */
+  content:""; position:absolute; inset:0; z-index:-1;
+  background: radial-gradient(60% 40% at 50% 55%, rgba(0,0,0,.35), rgba(0,0,0,.55));
+  mix-blend-mode: multiply;
+}
+.parallax .para-copy h2{
+  margin: 0 0 .3em; font-size: clamp(1.8rem, 2.4vw + 1rem, 2.8rem);
+  text-shadow: 0 3px 22px rgba(0,0,0,.45);
+}
+.parallax .para-copy .lede{
+  margin: 0 auto; max-width: 42ch;
+  font-size: clamp(1.05rem, 1.2vw + .8rem, 1.35rem);
+  line-height: 1.9;
+  opacity: .95;
+  text-shadow: 0 2px 16px rgba(0,0,0,.40);
+}
+
+/* 降級支援：不支援 view-timeline → 固定背景的類視差 */
+@supports not (animation-timeline: view()){
+  .parallax{ height: 180vh; }
+  .parallax .scene{ position: relative; }
+  .parallax .layer{
+    inset: 0;
+    background-attachment: fixed; /* 桌面端會有視差感，行動端視情況 */
+    transform: none;
+  }
+}
+
+/* 無障礙：使用者偏好減少動作 */
+@media (prefers-reduced-motion: reduce){
+  .parallax{ height: auto; }
+  .parallax .scene{ position: relative; }
+  .parallax .layer{ transform: none !important; animation: none !important; }
+  .parallax .para-copy::before{ background: rgba(0,0,0,.45); } /* 保留文字對比 */
+}
+
+/* ===== Parallax Walk：強化版（更長滾動＋sticky 舞台） ===== */
+.parallax-walk{
+  --slide-h: 180vh;                    /* ↑每幕更長的滾動距離 */
+  --glow: 0 20px 60px rgba(0,0,0,.22);
+  background: linear-gradient(180deg,#fbf7f2 0%, #fffefb 60%, #fbf7f2 100%);
+}
+
+/* 每幕擁有自己的 view timeline（時間軸） */
+.parallax-walk .px-slide{
+  position: relative;
+  height: var(--slide-h);
+  view-timeline-name: --px;
+  view-timeline-axis: block;
+}
+
+/* sticky 舞台：畫面固定 100vh，讓滾動時間拉長 */
+.parallax-walk .px-stage{
+  position: sticky; top: 0; height: 100vh; overflow: clip;
+  display: grid; place-items: center;
+}
+
+/* 三層背景（遠/中/近） */
+.parallax-walk .bg{
+  position: absolute; inset: -10vh -10vw;
+  background-size: cover; background-position: center;
+  will-change: transform, opacity;
+  filter: contrast(1.03) saturate(1.05);
+}
+
+/* 用 cover→cover 讓動畫跑完整個 180vh 區間 */
+.parallax-walk .bg.back{ animation: px-back linear both; animation-timeline: --px; animation-range: cover 0% cover 100%; }
+.parallax-walk .bg.mid { animation: px-mid  linear both; animation-timeline: --px; animation-range: cover 0% cover 100%; }
+.parallax-walk .bg.fore{ animation: px-fore linear both; animation-timeline: --px; animation-range: cover 0% cover 100%; }
+
+/* 置中文案 */
+.parallax-walk .copy{
+  position: relative; z-index: 2;
+  text-align: center; color: #fff;
+  padding: clamp(20px,5vw,60px);
+  text-shadow: 0 3px 22px rgba(0,0,0,.45);
+}
+.parallax-walk .copy::before{
+  content:""; position:absolute; inset:0; z-index:-1;
+  background: radial-gradient(60% 40% at 50% 55%, rgba(0,0,0,.32), rgba(0,0,0,.55));
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  mix-blend-mode: multiply;
+}
+.parallax-walk h2{
+  margin: 0 0 .3em; font-size: clamp(1.8rem, 2.4vw + 1rem, 2.8rem);
+}
+.parallax-walk .lede{
+  margin: 0 auto; max-width: 46ch;
+  font-size: clamp(1.05rem, 1.2vw + .8rem, 1.35rem);
+  line-height: 1.9; opacity: .96;
+}
+
+/* 前景漂浮 */
+.parallax-walk .float{
+  position: absolute; z-index: 3; color:#fff; text-align:center;
+  backdrop-filter: blur(1px);
+}
+.parallax-walk .float img{
+  display:block; width: min(38vw, 420px); height:auto;
+  border-radius: 12px; box-shadow: var(--glow);
+}
+.parallax-walk .float figcaption{
+  font-size:.9rem; margin-top:.4em; opacity:.9; text-shadow:0 2px 10px rgba(0,0,0,.4);
+}
+
+/* 漂浮路徑（也跑完整個 cover→cover 區間） */
+.parallax-walk .float-a{ left: 8vw; bottom: 10vh; transform-origin: 20% 80%;
+  animation: drift-a linear both; animation-timeline: --px; animation-range: cover 0% cover 100%;
+}
+.parallax-walk .float-b{ right: 8vw; top: 14vh; transform-origin: 80% 20%;
+  animation: drift-b linear both; animation-timeline: --px; animation-range: cover 0% cover 100%;
+}
+
+/* 位移比例：放大到更有感（fore 最大） */
+@keyframes px-back{
+  from{ transform: translateY(-10%) scale(1.10); opacity:.95; }
+  to  { transform: translateY( 10%) scale(1.14); opacity:.95; }
+}
+@keyframes px-mid{
+  from{ transform: translateY(-18%) scale(1.08); }
+  to  { transform: translateY( 18%) scale(1.12); }
+}
+@keyframes px-fore{
+  from{ transform: translateY(-30%) scale(1.06); }
+  to  { transform: translateY( 30%) scale(1.10); }
+}
+
+/* 漂浮動畫：幅度稍微變大 */
+@keyframes drift-a{
+  from{ transform: translateY(3vh) translateX(-2vw) rotate(-3deg) }
+  50% { transform: translateY(-2vh) translateX( 1vw) rotate(-1deg) }
+  to  { transform: translateY(3vh) translateX(-2vw) rotate(-3deg) }
+}
+@keyframes drift-b{
+  from{ transform: translateY(-2vh) translateX( 1vw) rotate(2.5deg) }
+  50% { transform: translateY( 3vh) translateX(-1vw) rotate(.5deg) }
+  to  { transform: translateY(-2vh) translateX( 1vw) rotate(2.5deg) }
+}
+
+/* 每幕的圖（照你之前變數即可；此處沿用示例） */
+:root{
+  --s1-back: url("https://picsum.photos/id/1015/2000/1300");
+  --s1-mid:  url("https://picsum.photos/id/1067/2000/1300");
+  --s1-fore: url("https://picsum.photos/id/1062/2000/1300");
+  --s2-back: url("https://picsum.photos/id/1043/2000/1300");
+  --s2-mid:  url("https://picsum.photos/id/1031/2000/1300");
+  --s2-fore: url("https://picsum.photos/id/1056/2000/1300");
+  --s3-back: url("https://picsum.photos/id/1003/2000/1300");
+  --s3-mid:  url("https://picsum.photos/id/1016/2000/1300");
+  --s3-fore: url("https://picsum.photos/id/1021/2000/1300");
+  --s4-back: url("https://picsum.photos/id/1011/2000/1300");
+  --s4-mid:  url("https://picsum.photos/id/1035/2000/1300");
+  --s4-fore: url("https://picsum.photos/id/1025/2000/1300");
+}
+.s1 .back{ background-image: var(--s1-back); } .s1 .mid{ background-image: var(--s1-mid); } .s1 .fore{ background-image: var(--s1-fore); }
+.s2 .back{ background-image: var(--s2-back); } .s2 .mid{ background-image: var(--s2-mid); } .s2 .fore{ background-image: var(--s2-fore); }
+.s3 .back{ background-image: var(--s3-back); } .s3 .mid{ background-image: var(--s3-mid); } .s3 .fore{ background-image: var(--s3-fore); }
+.s4 .back{ background-image: var(--s4-back); } .s4 .mid{ background-image: var(--s4-mid); } .s4 .fore{ background-image: var(--s4-fore); }
+
+/* 降級：無 view-timeline → fixed 近似效果 */
+@supports not (animation-timeline: view()){
+  .parallax-walk .px-slide{ height: 120vh; }
+  .parallax-walk .px-stage{ position: relative; }
+  .parallax-walk .bg{ inset:0; background-attachment: fixed; transform:none !important; }
+  .parallax-walk .float{ position: sticky; top: 16vh; }
+}
+
+/* 無障礙 */
+@media (prefers-reduced-motion: reduce){
+  .parallax-walk .bg,
+  .parallax-walk .float{ animation: none !important; transform: none !important; }
+}

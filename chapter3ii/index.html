@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>台灣感性｜翻卡拼圖＋水平捲動（純 CSS）</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ① Hero -->
+  <section class="hero">
+    <div class="hero-inner container">
+      <h1>台灣感性 Taiwan Vibes</h1>
+      <p>不是打卡點，是日常的溫度：巷弄、騎樓、便利商店、手寫招牌與夜市光影。</p>
+    </div>
+  </section>
+
+  <!-- ② 定義 -->
+  <section class="section taigan-def">
+    <div class="container">
+      <h2>什麼是「台灣感性」？</h2>
+      <p class="lede">它是一種被容納的混雜——不強求整齊，卻足以舒展身體的秩序；是雨棚底下的等待，是菜市口交會的人情。</p>
+      <ul class="pill-list">
+        <li>巷弄與騎樓的半戶外</li>
+        <li>手寫字體與褪色牆面</li>
+        <li>夜市與路邊攤的流動性</li>
+        <li>便利商店的微基礎設施</li>
+        <li>斜坡、樓梯與山城視角</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ③ 引言 -->
+  <section class="section quote">
+    <div class="container">
+      <blockquote>在高度整齊的世界裡，台灣感性讓「不規則」也能被喜歡；它讓生活擁有留白，讓人與空間靠得更近。</blockquote>
+    </div>
+  </section>
+
+  <!-- ④ 翻卡拼圖（純 CSS，4×6） -->
+  <section class="section">
+    <div class="container">
+      <h2 class="center">把畫面翻過來，看看背後的註記</h2>
+      <p class="hint">滑到會翻；點一下鎖定，再點一次解除。解除後把游標移出一下，hover 就會恢復。</p>
+
+      <div class="puzzle-wrap">
+        <div class="puzzle-grid" role="group" aria-label="台灣感性翻卡拼圖">
+          <!-- y = 0 -->
+          <div class="card" style="--x:0;--y:0">
+            <input type="checkbox" aria-label="翻面：巷弄與騎樓">
+            <div class="front" aria-hidden="true"></div>
+            <div class="back"><div class="back-inner"><h3>巷弄與騎樓</h3><p>半戶外的生活廊道，遮雨、納涼、聊天、等人。</p></div></div>
+          </div>
+          <div class="card" style="--x:1;--y:0">
+            <input type="checkbox" aria-label="翻面：夜市光影">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>夜市光影</h3><p>油煙與人潮交疊，是城市最吵也最暖的橫截面。</p></div></div>
+          </div>
+          <div class="card" style="--x:2;--y:0">
+            <input type="checkbox" aria-label="翻面：手寫招牌">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>手寫招牌</h3><p>沒有標準字，但人人認得：因為那是「那一家」。</p></div></div>
+          </div>
+          <div class="card" style="--x:3;--y:0">
+            <input type="checkbox" aria-label="翻面：便利商店文化">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>便利商店文化</h3><p>24 小時的公共客廳，補足生活的微型基礎設施。</p></div></div>
+          </div>
+          <div class="card" style="--x:4;--y:0">
+            <input type="checkbox" aria-label="翻面：斜坡與樓梯">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>斜坡與樓梯</h3><p>山城的節奏，在折返之間改變觀看的高度。</p></div></div>
+          </div>
+          <div class="card" style="--x:5;--y:0">
+            <input type="checkbox" aria-label="翻面：攤販與機動">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>攤販與機動</h3><p>臨時性不是混亂，而是對生活需要的快速回應。</p></div></div>
+          </div>
+
+          <!-- y = 1 -->
+          <div class="card" style="--x:0;--y:1">
+            <input type="checkbox" aria-label="翻面：社區修補">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>社區修補</h3><p>與其一刀切更新，不如慢慢補、讓記憶共存。</p></div></div>
+          </div>
+          <div class="card" style="--x:1;--y:1">
+            <input type="checkbox" aria-label="翻面：雨棚與等待">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>雨棚與等待</h3><p>午後陣雨時的邂逅，讓陌生人短暫成為鄰居。</p></div></div>
+          </div>
+          <div class="card" style="--x:2;--y:1">
+            <input type="checkbox" aria-label="翻面：里長伯系統">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>里長伯系統</h3><p>資訊在巷弄流動，人情成了治理的一部分。</p></div></div>
+          </div>
+          <div class="card" style="--x:3;--y:1">
+            <input type="checkbox" aria-label="翻面：騎樓尺度">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>騎樓尺度</h3><p>人可走、攤可擺、車可過——介於室內外之間。</p></div></div>
+          </div>
+          <div class="card" style="--x:4;--y:1">
+            <input type="checkbox" aria-label="翻面：混雜的秩序">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>混雜的秩序</h3><p>電纜、貼紙、布條共存，卻也自有分寸。</p></div></div>
+          </div>
+          <div class="card" style="--x:5;--y:1">
+            <input type="checkbox" aria-label="翻面：在地早餐店">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>在地早餐店</h3><p>騎樓邊的塑膠椅，是城市清晨的社交場。</p></div></div>
+          </div>
+
+          <!-- y = 2 -->
+          <div class="card" style="--x:0;--y:2">
+            <input type="checkbox" aria-label="翻面：水泥與綠意">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>水泥與綠意</h3><p>盆栽佔據角落，讓水泥城市長出柔軟。</p></div></div>
+          </div>
+          <div class="card" style="--x:1;--y:2">
+            <input type="checkbox" aria-label="翻面：便利貼文化">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>便利貼文化</h3><p>告示、手寫、社群轉貼——資訊像野生藤蔓。</p></div></div>
+          </div>
+          <div class="card" style="--x:2;--y:2">
+            <input type="checkbox" aria-label="翻面：里民活動中心">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>里民活動中心</h3><p>從長青學苑到合唱團，公共性在此被日常化。</p></div></div>
+          </div>
+          <div class="card" style="--x:3;--y:2">
+            <input type="checkbox" aria-label="翻面：機車與縫隙">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>機車與縫隙</h3><p>機動的交通，填滿城市留下的每一道空白。</p></div></div>
+          </div>
+          <div class="card" style="--x:4;--y:2">
+            <input type="checkbox" aria-label="翻面：小廟口">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>小廟口</h3><p>香火、桌椅與陰影，聚出一個臨時的公共場。</p></div></div>
+          </div>
+          <div class="card" style="--x:5;--y:2">
+            <input type="checkbox" aria-label="翻面：回頭看">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>回頭看</h3><p>視線一轉，才發現剛剛走過的是自己的日常。</p></div></div>
+          </div>
+
+          <!-- y = 3 -->
+          <div class="card" style="--x:0;--y:3">
+            <input type="checkbox" aria-label="翻面：菜市場">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>菜市場</h3><p>價格、公道與問候——最具民主感的場域之一。</p></div></div>
+          </div>
+          <div class="card" style="--x:1;--y:3">
+            <input type="checkbox" aria-label="翻面：修補式更新">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>修補式更新</h3><p>速度慢一點、精細一點，讓人與記憶住得下。</p></div></div>
+          </div>
+          <div class="card" style="--x:2;--y:3">
+            <input type="checkbox" aria-label="翻面：街角便利">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>街角便利</h3><p>超商、藥局、飲料店，維繫城市的日常韌性。</p></div></div>
+          </div>
+          <div class="card" style="--x:3;--y:3">
+            <input type="checkbox" aria-label="翻面：斑駁牆面">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>斑駁牆面</h3><p>時間留下的肌理，讓城市不只一種表情。</p></div></div>
+          </div>
+          <div class="card" style="--x:4;--y:3">
+            <input type="checkbox" aria-label="翻面：公共性">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>公共性</h3><p>不靠宏偉建築，而在無數微小的可停留處。</p></div></div>
+          </div>
+          <div class="card" style="--x:5;--y:3">
+            <input type="checkbox" aria-label="翻面：自由與秩序">
+            <div class="front"></div>
+            <div class="back"><div class="back-inner"><h3>自由與秩序</h3><p>管理與包容之間，找到不那麼完美、卻可愛的平衡。</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑤ 過場 -->
+  <section class="section taigan-bridge">
+    <div class="container narrow">
+      <p class="lede">接下來，用捲動去逛一條長巷——你往下滑，先看到第一幕滿版「定住」，再開始橫向移動。</p>
+    </div>
+  </section>
+
+  <!-- ⑥ 水平捲動（正向） -->
+  <section class="scroll-container-css">
+    <!-- ★ 前導：先顯示第一幕滿版，確保「滿版停住」 -->
+    <div class="h-intro h1">
+      <div class="intro-inner">
+        <h3>巷弄與騎樓</h3>
+        <p>半戶外的連續陰影，讓步行擁有舒服的節奏。</p>
+        <span class="scroll-hint">繼續下滑 ▶</span>
+      </div>
+    </div>
+
+    <div class="horizontal-track">
+      <div class="horizontal-strip">
+        <!-- 仍保留五張；若不想重複第一幕，可把第一張改成別的主題 -->
+        <article class="h-item h1"><h3>巷弄與騎樓</h3><p>半戶外的連續陰影，讓步行擁有舒服的節奏。</p></article>
+        <article class="h-item h2"><h3>夜市的光</h3><p>食物、煙霧與吆喝，構成城市最熱鬧的剖面。</p></article>
+        <article class="h-item h3"><h3>斜坡視角</h3><p>一段階梯的高度差，換來一整面的海與城市。</p></article>
+        <article class="h-item h4"><h3>便利商店</h3><p>隨手坐下歇一會兒，公共與私人曖昧相交。</p></article>
+        <article class="h-item h5"><h3>手寫招牌</h3><p>字跡帶著人的氣味，讓街區辨識度長在地上。</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑦ 過場（二） -->
+  <section class="section taigan-bridge">
+    <div class="container narrow">
+      <p class="lede">換個方向看：同樣的街，反過來走，會不會有不同的問題意識？</p>
+    </div>
+  </section>
+
+  <!-- ⑧ 水平捲動（反向） -->
+  <section class="scroll-container-css reverse">
+    <!-- 前導（反向也給一幕停住） -->
+    <div class="h-intro r1">
+      <div class="intro-inner">
+        <h3>秩序與混雜</h3>
+        <p>電纜、廣告、遮雨棚——怎麼管、保留什麼？</p>
+        <span class="scroll-hint">繼續下滑 ▶</span>
+      </div>
+    </div>
+
+    <div class="horizontal-track">
+      <div class="horizontal-strip reverse-strip">
+        <article class="h-item r1"><h3>秩序與混雜</h3><p>電纜、廣告、遮雨棚——怎麼管、保留什麼？</p></article>
+        <article class="h-item r2"><h3>安全與自由</h3><p>人行空間、機車停放、夜市營運的協調。</p></article>
+        <article class="h-item r3"><h3>記憶與更新</h3><p>老社區的修補式更新，能否慢一點、細一點？</p></article>
+        <article class="h-item r4"><h3>在地與觀光</h3><p>想被看見，但不想被打擾；尺度如何拿捏？</p></article>
+        <article class="h-item r5"><h3>文字與形象</h3><p>當「台灣感性」被命名，會不會失去曖昧的美？</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑨ 結語 -->
+  <section class="section outro">
+    <div class="container center">
+      <h2>反思台灣</h2>
+      <p class="lede">讓空間更安全、也更自由；在管理與包容之間，找到不那麼完美、卻很可愛的平衡。</p>
+    </div>
+  </section>
+
+   <!-- ⑩ 視差卷軸（Parallax Walk, 強化版） -->
+<section class="parallax-walk" aria-label="視差卷軸：多幕式散步">
+  <!-- Slide A -->
+  <section class="px-slide s1">
+    <div class="px-stage">
+      <div class="bg back" aria-hidden="true"></div>
+      <div class="bg mid"  aria-hidden="true"></div>
+      <div class="bg fore" aria-hidden="true"></div>
+
+      <div class="copy">
+        <h2>雨棚下的步伐</h2>
+        <p class="lede">午後陣雨忽大忽小，騎樓的陰影連成帶，讓人慢下來。</p>
+      </div>
+
+      <figure class="float float-a">
+        <img alt="便條紙" src="https://picsum.photos/id/1060/420/300">
+        <figcaption>「等等一起去買菜？」</figcaption>
+      </figure>
+      <figure class="float float-b">
+        <img alt="拍立得" src="https://picsum.photos/id/1050/360/260">
+        <figcaption>行人擦肩的城市節奏</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Slide B -->
+  <section class="px-slide s2">
+    <div class="px-stage">
+      <div class="bg back" aria-hidden="true"></div>
+      <div class="bg mid"  aria-hidden="true"></div>
+      <div class="bg fore" aria-hidden="true"></div>
+
+      <div class="copy">
+        <h2>夜市的光與聲</h2>
+        <p class="lede">油煙、吆喝與霓虹，城市最熱鬧的橫截面。</p>
+      </div>
+
+      <figure class="float float-a">
+        <img alt="價目小黑板" src="https://picsum.photos/id/103/380/260">
+        <figcaption>今日特價</figcaption>
+      </figure>
+      <figure class="float float-b">
+        <img alt="燈籠特寫" src="https://picsum.photos/id/292/420/300">
+        <figcaption>紅色的溫度</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Slide C -->
+  <section class="px-slide s3">
+    <div class="px-stage">
+      <div class="bg back" aria-hidden="true"></div>
+      <div class="bg mid"  aria-hidden="true"></div>
+      <div class="bg fore" aria-hidden="true"></div>
+
+      <div class="copy">
+        <h2>斜坡與折返</h2>
+        <p class="lede">高度差讓視角改變，一段階梯換來一整片風景。</p>
+      </div>
+
+      <figure class="float float-a">
+        <img alt="階梯貼紙" src="https://picsum.photos/id/1020/360/240">
+        <figcaption>上坡、再上坡</figcaption>
+      </figure>
+      <figure class="float float-b">
+        <img alt="窗邊綠意" src="https://picsum.photos/id/1025/420/300">
+        <figcaption>盆栽長出的柔軟</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Slide D -->
+  <section class="px-slide s4">
+    <div class="px-stage">
+      <div class="bg back" aria-hidden="true"></div>
+      <div class="bg mid"  aria-hidden="true"></div>
+      <div class="bg fore" aria-hidden="true"></div>
+
+      <div class="copy">
+        <h2>街角便利</h2>
+        <p class="lede">24 小時的公共客廳：充電、影印、歇腳與等雨。</p>
+      </div>
+
+      <figure class="float float-a">
+        <img alt="收據紙條" src="https://picsum.photos/id/1069/360/260">
+        <figcaption>電子發票載具</figcaption>
+      </figure>
+      <figure class="float float-b">
+        <img alt="超商窗景" src="https://picsum.photos/id/1074/420/300">
+        <figcaption>玻璃後的微光</figcaption>
+      </figure>
+    </div>
+  </section>
+</section>
+
+
+</body>
+</html>
